@@ -1,14 +1,14 @@
-function [filledImage] = filledImage_bilinear(a,b,c,d,cols,rows)
+function [filledImage] = filledImage_bilinear(a,b,c,d,newRows,newCols)
     % [a b]
     % [c d]
-    
-    A = double([1,1,1,1;(rows),1,(rows),1;1,(cols),(cols),1;(rows),(cols),(rows)*(cols),1])^-1;
+    filledImage = zeros(newRows,newCols);
+    A = [1,1,1,1;1,newCols,newCols,1;newRows,1,newRows,1;newRows,newCols,newRows*newCols,1]^(-1);
     B = double([a;b;c;d]);
-    C_matrix = A * B;
-    filledImage = zeros(cols,rows);
-    for row = 1:rows
-        for col = 1:cols
-            filledImage(col,row) = uint8([row,col,row*col,1]*C_matrix);
+    calMatrix = A*B;
+    for row=1:newRows
+        for col=1:newCols
+            filledImage(row,col) = ([row,col,row*col,1])*calMatrix;
         end
     end
+%     filledImage = uint8(filledImage);
 end
