@@ -1,0 +1,56 @@
+clear;
+close all;
+
+%% (a)
+inputImage = imread("./inputImage.tif");
+% inputImage = imresize(inputImage,[256,256]);
+inputImage = im2single(inputImage);
+imwrite(im2uint8(inputImage), 'original.tif');
+subplot(5,2,1),imshow(inputImage),title("Original Image");
+[M,N]= size(inputImage);
+
+% spatial to frequency
+F = fft2(inputImage);
+F = myFftshift(F);
+F_show = log(1+abs(F));
+F_max = max(F_show(:));
+F_show = im2uint8(F_show/F_max);
+imwrite(F_show, 'original_fq.tif');
+subplot(5,2,2),imshow(F_show),title("Original Frequency Domain");
+
+%% (b) radii = 10
+H = myGLPF(10,M,N);
+H_show = log(1+abs(H));
+H_max = max(H_show(:));
+H_show = im2uint8(H_show/H_max);
+imwrite(H_show, 'r10_mask.tif');
+subplot(5,2,4),imshow(H_show),title("radii = 10");
+
+G = F.*H;
+g = ifft2(G);
+g_show = abs(g);
+g_max = max(g_show(:));
+g_show = im2uint8(g_show/g_max);
+imwrite(g_show, 'r10.tif');
+subplot(5,2,3),imshow(g_show),title("radii = 10");
+
+%% (c) radii = 30
+H = myGLPF(30,M,N);
+H_show = log(1+abs(H));
+H_max = max(H_show(:));
+H_show = im2uint8(H_show/H_max);
+imwrite(H_show, 'r10_mask.tif');
+subplot(5,2,4),imshow(H_show),title("radii = 10");
+
+G = F.*H;
+g = ifft2(G);
+g_show = abs(g);
+g_max = max(g_show(:));
+g_show = im2uint8(g_show/g_max);
+imwrite(g_show, 'r30.tif');
+subplot(5,2,3),imshow(g_show),title("radii = 10");
+
+%% (d) radii = 60
+%% (e) radii = 160
+%% (f) radii = 460
+
