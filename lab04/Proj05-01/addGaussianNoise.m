@@ -1,9 +1,22 @@
-function [output_s] = addGaussianNoise(input_s,mu,sigma)
-% ADDGAUSSIANNOISE Summary of this function goes here
-%   Detailed explanation goes here
+function output_s = addGaussianNoise(input_s,mu,sigma)
 [M,N]= size(input_s);
 random = randn(M,N);
-gaussian_noise = (1/(sigma*(2*pi)^(1/2)))*exp(-((random - mu).^2)/(2*sigma^2));
-output_s = input_s + gaussian_noise;
-end
+% std(random,0,'all')
+% [min(random,[],'all') max(random,[],'all')]
 
+gaussian_noise = mu + (random*sigma);
+% std(gaussian_noise,0,'all')
+% [min(gaussian_noise,[],'all') max(gaussian_noise,[],'all')]
+
+output_s = input_s + gaussian_noise;
+% [min(output_s,[],'all') max(output_s,[],'all')]
+
+tmp = (output_s - min(output_s,[],'all'));
+output_s = (tmp/max(tmp,[],'all'));
+% [min(output_s,[],'all') max(output_s,[],'all')]
+
+tmp = (gaussian_noise - min(gaussian_noise,[],'all'));
+gaussian_noise = (tmp/max(tmp,[],'all'));
+imwrite(im2uint8(gaussian_noise), 'gaussian_noise.tif');
+
+end
